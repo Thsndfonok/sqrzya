@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thsnd</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Google Fonts (VT323) -->
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+  <style>
+    /* Csillogó effekt stílusa */
+    .sparkle {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(circle, white, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 1;
+      animation: sparkle-fade 0.8s forwards;
+      z-index: 9999; /* hogy minden fölött legyen */
+    }
+    @keyframes sparkle-fade {
+      to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.5);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Belépő képernyő -->
+  <div id="entryScreen">[Enter]</div>
+
+  <!-- Fő tartalom -->
+  <div id="mainContent">
+
+    <canvas id="bgCanvas"></canvas>
+    
+    <video autoplay muted loop playsinline id="bgVideo">
+      <source src="background.mp4" type="video/mp4" />
+      A böngésződ nem támogatja a videó lejátszást.
+    </video>
+
+    <!-- 🎧 Zenelejátszó -->
+    <div class="music-player">
+      <button id="playPauseBtn">
+        <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M5 3v18l15-9L5 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="display: none;">
+          <path d="M10 9v6M14 9v6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" />
+      <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg" />
+        A böngésződ nem támogatja az audio lejátszást.
+      </audio>
+    </div>
+
+    <!-- Profil tartalom -->
+    <div class="container" id="tiltCard">
+      <h1 class="glow-name">Thsnd</h1>
+      <p class="subtitle">developer • designer</p>
+      <p class="quote">“A winner is a loser who <span class="glow">didn’t give up”</span></p>
+
+      <div id="presenceCard">
+        <div class="presence-left">
+          <img id="presenceAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+          <div id="discordStatus" class="status-dot offline"></div>
+        </div>
+        <div class="presence-right">
+          <div class="username">.thsnd</div>
+          <div id="statusText">Offline</div>
+          <div id="songInfo">Spotify: not playing</div>
+        </div>
+        <img id="spotifyCover" src="" alt="Spotify cover" style="display: none;">
+      </div>
+
+      <div class="buttons">
+        <a href="https://discord.gg/herka" target="_blank">Discord</a>
+        <a href="https://www.instagram.com/thsnd._/" target="_blank">Instagram</a>
+        <a href="https://steamcommunity.com/id/Dior446/" target="_blank">Steam</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Egyedi neon egérkurzor -->
+  <div id="customCursor"></div>
+
+  <script src="script.js" defer></script>
+
+  <!-- 3D tilt script -->
+  <script>
+    const card = document.getElementById('tiltCard');
+
+    card.addEventListener('mousemove', (e) => {
+      const { width, height, left, top } = card.getBoundingClientRect();
+      const x = e.clientX - left;
+      const y = e.clientY - top;
+      const rotateX = ((y / height) - 0.5) * 20;
+      const rotateY = ((x / width) - 0.5) * -20;
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    });
+  </script>
+
+  <!-- Neon egérkövető -->
+  <script>
+    const customCursor = document.getElementById("customCursor");
+    document.addEventListener("mousemove", (e) => {
+      customCursor.style.left = e.clientX + "px";
+      customCursor.style.top = e.clientY + "px";
+    });
+  </script>
+
+  <!-- Csillogó kurzor effekt -->
+  <script>
+    document.addEventListener('mousemove', e => {
+      createSparkle(e.clientX, e.clientY);
+    });
+
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('sparkle');
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+
+      // Kis véletlenszerű elmozdulás, hogy ne legyen teljesen egyforma
+      sparkle.style.transform = `translate(${(Math.random() - 0.5) * 20}px, ${(Math.random() - 0.5) * 20}px)`;
+
+      document.body.appendChild(sparkle);
+
+      sparkle.addEventListener('animationend', () => {
+        sparkle.remove();
+      });
+    }
+  </script>
+
+</body>
+</html>
